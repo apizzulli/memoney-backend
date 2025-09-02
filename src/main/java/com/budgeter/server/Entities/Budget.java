@@ -17,6 +17,7 @@ public class Budget implements Serializable {
     @ElementCollection private Map<String, Double> categories;
     @JoinColumn(name="budget_id") @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     List<Transaction> transactions;
+    Double spent;
 
     public Budget() {}
     @JsonCreator
@@ -26,6 +27,7 @@ public class Budget implements Serializable {
         this.total = total;
         this.categories = categories;
         this.transactions = transactions;
+        this.spent = 0.0;
     }
 
     public Transaction addTransaction(Transaction t){
@@ -73,6 +75,14 @@ public class Budget implements Serializable {
 
     public void setTotal(double total){
         this.total = total;
+    }
+
+    public void setSpent(double amount){
+        this.spent = amount;
+    }
+
+    public Double getSpent(){
+        return this.spent;
     }
 
     @Override

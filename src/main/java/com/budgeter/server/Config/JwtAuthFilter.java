@@ -47,7 +47,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         String url =request.getRequestURL().toString();
 
-        if(url.contains("user/login")){
+        if(url.endsWith("user/login") || url.endsWith("user/createAccount") || url.endsWith("user/testEmail") || "OPTIONS".equalsIgnoreCase(request.getMethod())){
             filterChain.doFilter(request,response);//filterChain.doFilter(request, response);
             return;
         }

@@ -3,13 +3,13 @@ package com.budgeter.server.DTO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserDTO {
+public class LoginRequest {
 
     private String username;
     private String password;
 
-    public UserDTO(){}
-    public UserDTO(String username, String password) {
+    public LoginRequest(){}
+    public LoginRequest(String username, String password) {
         this.username = username;
         this.password = password;
     }

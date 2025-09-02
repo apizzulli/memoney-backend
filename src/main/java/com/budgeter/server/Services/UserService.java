@@ -1,7 +1,8 @@
 package com.budgeter.server.Services;
 
-import com.budgeter.server.DTO.LoginDTO;
-import com.budgeter.server.DTO.UserDTO;
+import com.budgeter.server.DTO.LoginRequest;
+import com.budgeter.server.DTO.LoginResponse;
+import com.budgeter.server.DTO.LoginResponse;
 import com.budgeter.server.Entities.Budget;
 import com.budgeter.server.Entities.User;
 import com.budgeter.server.Repositories.BudgetRepository;
@@ -30,7 +31,10 @@ public class UserService {
         this.authenticationManager = authenticationManager;
     }
 
-    public User login(UserDTO dto) {
+    public User login(LoginRequest dto) {
+        if(userRepository.findByUsername(dto.getUsername())==null){
+            return null;
+        }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         dto.getUsername(),
@@ -40,13 +44,13 @@ public class UserService {
         return userRepository.findByUsername(dto.getUsername());
     }
 
-    public User createUser(UserDTO input) {
+    public User createUser(LoginRequest input) {
         User user = new User();
         user.setUsername(input.getUsername());
         user.setPassword(passwordEncoder.encode(input.getPassword()));
         userRepository.save(user);
         return user;
-        //return new LoginDTO(user.getId(), null, )
+        //return new LoginResponse(user.getId(), null, )
     }
 
 }

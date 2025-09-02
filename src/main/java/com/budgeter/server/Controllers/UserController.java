@@ -1,11 +1,13 @@
 package com.budgeter.server.Controllers;
 import com.budgeter.server.Config.JwtService;
 import com.budgeter.server.Config.JwtToken;
-import com.budgeter.server.DTO.LoginDTO;
-import com.budgeter.server.DTO.UserDTO;
+import com.budgeter.server.DTO.LoginRequest;
+import com.budgeter.server.DTO.LoginResponse;
+import com.budgeter.server.DTO.LoginResponse;
 import com.budgeter.server.Entities.Budget;
 import com.budgeter.server.Entities.User;
 import com.budgeter.server.Repositories.UserRepository;
+import com.budgeter.server.Services.EmailService;
 import com.budgeter.server.Services.UserService;
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,44 +27,40 @@ public class UserController {
 
     private final JwtService jwtService;
     private final UserService userService;
-
-    public UserController(JwtService jwtService, UserService userService) {
+    private final EmailService emailService;
+    public UserController(JwtService jwtService, UserService userService, EmailService emailService) {
         this.jwtService = jwtService;
         this.userService = userService;
+        this.emailService = emailService;
     }
-
-//    @PostMapping("/generateToken")
-//    public String authenticateAndGetToken(@RequestBody User dto) {
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword())
-//        );
-//        if (authentication.isAuthenticated()) {
-//            return jwtService.generateToken(dto.getUsername());
-//        } else {
-//            throw new UsernameNotFoundException("Invalid user request!");
-//        }
-//    }
 
     public JwtToken generateToken(User user){
         return new JwtToken(jwtService.generateToken(user),jwtService.getExpirationTime());
     }
-    //@CrossOrigin(origins="http://localhost:3000")
+
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody UserDTO login){
-        User user = userService.login(login);
-        LoginDTO dto = new LoginDTO();
-        dto.setBudgets(user.getBudgets());
-        dto.setUserId(user.getId());
-        dto.setToken(generateToken(user));
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+    public ResponseEntity<Object> login(@RequestBody LoginRequest request){
+        User user = userService.login(request);
+        if(user == null){
+            return new ResponseEntity<>("No such user", HttpStatus.NOT_FOUND);
+        }
+//        LoginResponse dto = new LoginResponse();
+//        dto.setToken(generateToken(user));
+        return new ResponseEntity<>(new LoginResponse(user, generateToken(user)), HttpStatus.OK);
     }
 
     @PostMapping("/createAccount")
-    public ResponseEntity<Object> createAccount(@RequestBody UserDTO info) {
+    public ResponseEntity<Object> createAccount(@RequestBody LoginRequest info) {
         User newUser = userService.createUser(info);
-        userService.login(info);
-        return ResponseEntity.ok(new LoginDTO(newUser.getId(), null,generateToken(newUser)));
+        JwtToken token = generateToken(newUser);
+        this.emailService.sendAccountCreated(info.getUsername());
+        return new ResponseEntity<>(new LoginResponse(newUser, token), HttpStatus.CREATED);
     }
 
+    @GetMapping("/testEmail")
+    public String testEmail(){ 
+        this.emailService.sendSimpleMessage();
+        return "Hello from /budgets/test";
+    }
 
 }

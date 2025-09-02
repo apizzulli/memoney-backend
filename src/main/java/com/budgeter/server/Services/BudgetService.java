@@ -32,6 +32,10 @@ public class BudgetService {
         return user.getBudgets();
     }
 
+    public Budget getById(Long budgetId){
+        return budgetRepo.findById(budgetId).get();
+    }
+
 //    public Budget edit(Long id, String name, double total, Map<String,String> categories){
 //        Budget budget = budgetRepo.findById(id).get();
 //        if(name != null){
@@ -41,7 +45,7 @@ public class BudgetService {
 //
 //        }
 //    }
-    //    public List<Budget> getBudgets(UserDTO user){
+    //    public List<Budget> getBudgets(LoginResponse user){
 //        return user.getBudgets();
 //    }
 }

@@ -2,9 +2,10 @@ package com.budgeter.server.Controllers;
 import com.budgeter.server.Config.JwtService;
 import com.budgeter.server.Entities.Budget;
 import com.budgeter.server.Entities.User;
-import com.budgeter.server.Services.BudgetService;
+import com.budgeter.server.Services.*;
 import com.budgeter.server.Repositories.BudgetRepository;
 import com.budgeter.server.Repositories.UserRepository;
+import com.budgeter.server.Services.EmailService;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,17 +26,20 @@ public class BudgetController {
     private final UserRepository userRepo;
     private final BudgetService budgetService;
     private final JwtService jwtService;
+    private final EmailService emailService;
 
-    public BudgetController(BudgetRepository budgetRepo, UserRepository userRepo, BudgetService budgetService, JwtService jwtService){
+    public BudgetController(BudgetRepository budgetRepo, UserRepository userRepo, BudgetService budgetService, JwtService jwtService, EmailService emailService) {
         this.budgetRepo = budgetRepo;
         this.userRepo = userRepo;
         this.budgetService = budgetService;
         this.jwtService = jwtService;
+        this.emailService = emailService;
     }
 
-    @GetMapping("/test")
-    public String test(){
-        return "Hello from /budgets/test";
+    @GetMapping(value="getById/{budgId}")
+    public ResponseEntity<Budget> getById(@PathVariable(value="budgId") Long budgId){
+        Budget b = budgetService.getById(budgId);
+        return new ResponseEntity<>(b, HttpStatus.OK);
     }
     @PostMapping(value="/create/{id}")
     public ResponseEntity<Budget> newBudget(@RequestBody Budget newBudget, @PathVariable(value="id") Long userId) {
@@ -43,8 +47,8 @@ public class BudgetController {
         return new ResponseEntity<>(newBudget, HttpStatus.CREATED);
     }
 
-    @GetMapping(value="/getAll/{id}")
-    public ResponseEntity<Object> getAll( @PathVariable(value="id") Long userId){
+    @GetMapping(value="/getAll/{userId}")
+    public ResponseEntity<Object> getAll( @PathVariable(value="userId") Long userId){
         List<Budget> budgets = budgetService.getAll(userId);
         if(budgets.isEmpty()){
             return new ResponseEntity<>("No budgets", HttpStatus.OK);

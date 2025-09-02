@@ -4,6 +4,9 @@ import com.budgeter.server.Entities.Transaction;
 import com.budgeter.server.Repositories.BudgetRepository;
 import com.budgeter.server.Repositories.TransactionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.Optional;
 
 @Service
 public class TransactionService {
@@ -21,5 +24,15 @@ public class TransactionService {
         budget.addTransaction(transaction);
         transRepo.save(transaction);
         return transaction;
+    }
+
+    public boolean delete(Long transId) throws HttpClientErrorException{
+        Optional<Transaction> trans = transRepo.findById(transId);
+        if(trans.isEmpty()){
+            return false;
+        }
+        transRepo.deleteById(transId);
+        Optional<Transaction> remaining = transRepo.findById(transId);
+        return remaining.isEmpty();
     }
 }
