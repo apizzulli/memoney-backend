@@ -80,5 +80,9 @@ public class BudgetController {
         budgetRepo.save(budget);
         return ResponseEntity.ok(budget);
     }
+    @GetMapping(value="/test")
+    public void test(){
+        budgetService.refresh();
+    }
 
 }
