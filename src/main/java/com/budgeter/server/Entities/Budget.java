@@ -34,6 +34,7 @@ public class Budget implements Serializable {
         List<Transaction> newTrans = this.transactions;
         newTrans.add(t);
         this.transactions = newTrans;
+        this.spent += t.getAmount();
         return t;
     }
 

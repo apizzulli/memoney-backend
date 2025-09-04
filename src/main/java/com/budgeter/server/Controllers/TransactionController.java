@@ -33,12 +33,9 @@ public class TransactionController {
     }
     //@CrossOrigin(origins="http://localhost:3000")
     @PostMapping(value="/add/{budgetId}")
-    public Budget addTransaction(@PathVariable(value="budgetId") Long budgetId, @RequestBody Transaction newTrans){
-        Budget budget = budgetRepo.findById(budgetId).get();
-        budget.setSpent(budget.getSpent()+ newTrans.getAmount());
-        budget.addTransaction(newTrans);
-        transRepo.save(newTrans);
-        return budget;
+    public ResponseEntity<Object> addTransaction(@PathVariable(value="budgetId") Long budgetId, @RequestBody Transaction newTrans){
+        transactionService.create(newTrans, budgetId);
+        return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     @GetMapping(value="/get/{budgetId}")
@@ -47,14 +44,16 @@ public class TransactionController {
         return budget.getTransactions();
     }
 
-    @PostMapping(value="/delete/{transId}")
-    public ResponseEntity<Object> deleteTransaction(@PathVariable(value="transId") Long transId){
-        boolean success = transactionService.delete(transId);
+    @PostMapping(value="/delete/{id}")
+    public ResponseEntity<Object> deleteTransaction(@PathVariable(value="id") String id){
+        Long transactionId = Long.parseLong(id.substring(0, id.indexOf("-")));
+        Long budgetId = Long.parseLong(id.substring(id.indexOf("-")+1));
+        Budget updated = transactionService.delete(transactionId, budgetId);
         HttpStatus status = HttpStatus.NO_CONTENT;
-        if(!success){
+        if(updated == null){
             status = HttpStatus.NOT_FOUND;
         }
-        return new ResponseEntity<>(null, status);
+        return new ResponseEntity<>(updated, status);
 //        return null;
 //        Budget budget = budgetRepo.findById(budgetId).get();
 //        return budget.getById();

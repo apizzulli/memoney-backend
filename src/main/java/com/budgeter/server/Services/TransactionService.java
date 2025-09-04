@@ -13,10 +13,11 @@ public class TransactionService {
 
     private final TransactionRepository transRepo;
     private final BudgetRepository budgetRepo;
-
-    public TransactionService(TransactionRepository transRepo, BudgetRepository budgetRepo) {
+    private final BudgetService budgetService;
+    public TransactionService(TransactionRepository transRepo, BudgetRepository budgetRepo, BudgetService budgetService) {
         this.transRepo = transRepo;
         this.budgetRepo = budgetRepo;
+        this.budgetService = budgetService;
     }
 
     public Transaction create(Transaction transaction, Long budgetId){
@@ -26,13 +27,13 @@ public class TransactionService {
         return transaction;
     }
 
-    public boolean delete(Long transId) throws HttpClientErrorException{
+    public Budget delete(Long transId, Long budgetId) throws HttpClientErrorException{
         Optional<Transaction> trans = transRepo.findById(transId);
         if(trans.isEmpty()){
-            return false;
+            return null;
         }
         transRepo.deleteById(transId);
         Optional<Transaction> remaining = transRepo.findById(transId);
-        return remaining.isEmpty();
+        return budgetService.refresh(budgetId);
     }
 }

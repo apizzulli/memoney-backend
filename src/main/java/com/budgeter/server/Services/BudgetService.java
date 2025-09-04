@@ -36,16 +36,30 @@ public class BudgetService {
     public Budget getById(Long budgetId){
         return budgetRepo.findById(budgetId).get();
     }
-    public void refresh() {
+
+    public Budget refresh(Long budgId) {
+        Budget b = budgetRepo.findById(budgId).get();
+        double s = 0;
+        for (Transaction t: b.getTransactions()){
+            s+=t.getAmount();
+        }
+        b.setSpent(s);
+        budgetRepo.save(b);
+        return b;
+    }
+
+    public List<Budget> refreshAll() {
         List<Budget> all = budgetRepo.findAll();
         double s = 0;
         for(Budget b: all){
             for (Transaction t: b.getTransactions()){
                 s+=t.getAmount();
             }
+            b.setSpent(s);
+            budgetRepo.save(b);
 //           b.setSpent(b.getTransactions().forEach(t->s+=t.getAmount()));
         }
-        System.out.println("s= "+s);
+        return all;
     }
 //    public Budget edit(Long id, String name, double total, Map<String,String> categories){
 //        Budget budget = budgetRepo.findById(id).get();
