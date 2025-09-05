@@ -6,6 +6,7 @@ import com.budgeter.server.Repositories.TransactionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,13 +28,13 @@ public class TransactionService {
         return transaction;
     }
 
-    public Budget delete(Long transId, Long budgetId) throws HttpClientErrorException{
+    public List<Budget> delete(Long transId, Long budgetId) throws HttpClientErrorException{
         Optional<Transaction> trans = transRepo.findById(transId);
         if(trans.isEmpty()){
             return null;
         }
         transRepo.deleteById(transId);
         Optional<Transaction> remaining = transRepo.findById(transId);
-        return budgetService.refresh(budgetId);
+        return budgetService.refreshAll();
     }
 }

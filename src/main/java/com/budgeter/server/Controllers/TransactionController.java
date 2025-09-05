@@ -45,11 +45,11 @@ public class TransactionController {
     }
 
     @PostMapping(value="/delete/{id}")
-    public ResponseEntity<Object> deleteTransaction(@PathVariable(value="id") String id){
+    public ResponseEntity<List<Budget>> deleteTransaction(@PathVariable(value="id") String id){
         Long transactionId = Long.parseLong(id.substring(0, id.indexOf("-")));
         Long budgetId = Long.parseLong(id.substring(id.indexOf("-")+1));
-        Budget updated = transactionService.delete(transactionId, budgetId);
-        HttpStatus status = HttpStatus.NO_CONTENT;
+        List<Budget> updated = transactionService.delete(transactionId, budgetId);
+        HttpStatus status = HttpStatus.OK;
         if(updated == null){
             status = HttpStatus.NOT_FOUND;
         }
