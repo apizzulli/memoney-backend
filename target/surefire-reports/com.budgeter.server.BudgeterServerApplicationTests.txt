@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.budgeter.server.BudgeterServerApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.813 s -- in com.budgeter.server.BudgeterServerApplicationTests
