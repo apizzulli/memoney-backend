@@ -8,10 +8,10 @@
 		<version>3.3.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.budgeter</groupId>
+	<groupId>com.memoney</groupId>
 	<artifactId>server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>budgeter-server</name>
+	<name>memoney-server</name>
 	<description>Budget Manager Server</description>
 	<url/>
 	<licenses>
@@ -111,7 +111,7 @@
 				</executions>
 				<!-- mainClass is optional if Boot can detect it, but adding it is safe -->
 				<configuration>
-					<mainClass>com.budgeter.server.BudgeterServerApplication</mainClass>
+					<mainClass>com.memoney.server.MemoneyServerApplication</mainClass>
 				</configuration>
 
 			</plugin>
