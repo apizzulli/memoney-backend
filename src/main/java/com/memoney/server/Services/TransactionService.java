@@ -24,6 +24,7 @@ public class TransactionService {
     public Transaction create(Transaction transaction, Long budgetId){
         Budget budget = budgetRepo.findById(budgetId).get();
         budget.addTransaction(transaction);
+        budgetRepo.save(budget);
         transRepo.save(transaction);
         return transaction;
     }
