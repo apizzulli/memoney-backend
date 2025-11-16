@@ -62,7 +62,11 @@ public class BudgetController {
 //        List<Budget> budgets = budgetService.getBudgets(user);
 //        return budgets;
 //    }
-
+    @PatchMapping(value="/edit/{budgetId}")
+    public ResponseEntity<?> updateName(@PathVariable(value="budgetId") Long budgetId, @RequestBody Budget edited) {
+        Budget result = budgetService.edit(budgetId, edited);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
     @PatchMapping(value="/update/name/{budgetId}")
     public ResponseEntity<?> updateName(@PathVariable(value="budgetId") Long budgetId, @RequestBody String newName) {
         Optional<Budget> budg = budgetRepo.findById(budgetId);

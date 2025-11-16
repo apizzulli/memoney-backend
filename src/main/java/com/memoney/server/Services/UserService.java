@@ -35,6 +35,10 @@ public class UserService {
     }
 
     public User createUser(LoginRequest input) {
+        User found = userRepository.findByUsername(input.getUsername());
+        if(userRepository.findByUsername(input.getUsername()) != null){
+            return null;
+        }
         User user = new User();
         user.setUsername(input.getUsername());
         user.setPassword(passwordEncoder.encode(input.getPassword()));

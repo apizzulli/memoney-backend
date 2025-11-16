@@ -52,6 +52,9 @@ public class UserController {
     @PostMapping("/createAccount")
     public ResponseEntity<Object> createAccount(@RequestBody LoginRequest info) {
         User newUser = userService.createUser(info);
+        if(newUser == null){
+            return new ResponseEntity<>(new LoginResponse(null, null), HttpStatus.NOT_MODIFIED);
+        }
         JwtToken token = generateToken(newUser);
         this.emailService.sendAccountCreated(info.getUsername());
         return new ResponseEntity<>(new LoginResponse(newUser, token), HttpStatus.CREATED);

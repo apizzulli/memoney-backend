@@ -59,15 +59,17 @@ public class BudgetService {
         }
         return all;
     }
-//    public Budget edit(Long id, String name, double total, Map<String,String> categories){
-//        Budget budget = budgetRepo.findById(id).get();
-//        if(name != null){
-//            budget.setName(name);
-//        }
-//        if(total != null){
-//
-//        }
-//    }
+    public Budget edit(Long id, Budget budget){
+        Budget found = budgetRepo.findById(id).get();
+        if(budget.getName() != null && budget.getName() != found.getName()){
+            found.setName(budget.getName());
+        }
+        if(budget.getTotal() != found.getTotal()){
+            found.setTotal(budget.getTotal());
+        }
+        budgetRepo.save(found);
+        return found;
+    }
     //    public List<Budget> getBudgets(LoginResponse user){
 //        return user.getBudgets();
 //    }
